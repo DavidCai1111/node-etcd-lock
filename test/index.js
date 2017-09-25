@@ -5,7 +5,7 @@ const Locker = require('../index')
 
 describe('node-etcd-lock tests', function () {
   this.timeout(1000 * 10)
-  const client = new Locker({ endPoint: '192.168.0.21:3379' })
+  const client = new Locker({ endPoint: '127.0.0.1:2379' })
 
   describe('lock', function () {
     it('lock with a fresh key name', async function () {
