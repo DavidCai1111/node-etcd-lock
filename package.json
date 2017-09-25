@@ -1,0 +1,28 @@
+{
+  "name": "node-etcd-lock",
+  "version": "0.0.1",
+  "description": "https://github.com/DavidCai1993/node-etcd-lock.git",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/standard && ./node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavidCai1993/node-etcd-lock.git"
+  },
+  "author": "DavidCai1993",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DavidCai1993/node-etcd-lock/issues"
+  },
+  "homepage": "https://github.com/DavidCai1993/node-etcd-lock#readme",
+  "dependencies": {
+    "co": "^4.6.0",
+    "grpc": "^1.6.0"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.3",
+    "power-assert": "^1.4.4",
+    "standard": "^10.0.3"
+  }
+}
