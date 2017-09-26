@@ -2,6 +2,7 @@
 'use strict'
 require('co-mocha')
 const assert = require('power-assert')
+const delay = require('delay')
 const Locker = require('../index')
 const Lock = require('../lock')
 
@@ -18,6 +19,20 @@ describe('node-etcd-lock tests', function () {
       })
 
       assert(endPoint === '127.0.0.1:2379')
+    })
+
+    it('lock with a empty key name', function * () {
+      try {
+        yield client.lock()
+      } catch (error) {
+        assert(error.message, 'empty keyName')
+      }
+
+      try {
+        yield client.lock('')
+      } catch (error) {
+        assert(error.message, 'empty keyName')
+      }
     })
 
     it('lock with a fresh key name', function * () {
@@ -65,6 +80,28 @@ describe('node-etcd-lock tests', function () {
 
       assert(middle - start < 1000)
       assert(end - middle < 1000)
+    })
+
+    it('check whether is locked', function * () {
+      let isLocked = yield client.isLocked('node_lock_test_6')
+      assert(isLocked === false)
+
+      yield client.lock('node_lock_test_6', 3 * 1000)
+      yield client.lock('node_lock_test_7', 10 * 1000)
+
+      isLocked = yield client.isLocked('node_lock_test_6')
+      assert(isLocked === true)
+
+      isLocked = yield client.isLocked('node_lock_test_6')
+      assert(isLocked === true)
+
+      yield delay(3500)
+
+      isLocked = yield client.isLocked('node_lock_test_6')
+      assert(isLocked === false)
+
+      isLocked = yield client.isLocked('node_lock_test_7')
+      assert(isLocked === true)
     })
   })
 

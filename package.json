@@ -1,6 +1,6 @@
 {
   "name": "node-etcd-lock",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Distributed locks powered by etcd v3 for Node.js",
   "main": "index.js",
   "scripts": {
@@ -27,6 +27,7 @@
   },
   "devDependencies": {
     "co-mocha": "^1.2.0",
+    "delay": "^2.0.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.5.3",
     "power-assert": "^1.4.4",

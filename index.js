@@ -9,6 +9,8 @@ const RPC_PROTO_PATH = path.join(__dirname, './proto/rpc.proto')
 const LockProto = grpc.load(LOCK_PROTO_PATH).v3lockpb
 const RpcProto = grpc.load(RPC_PROTO_PATH).etcdserverpb
 
+const ETCD_KEY_PREFIX = 'node_etcd_lock/'
+
 class Locker {
   constructor (options = {
     endPoint: '127.0.0.1:2379',
@@ -33,15 +35,54 @@ class Locker {
 
     this.locker = new LockProto.Lock(this.endPoint, credentials)
     this.leaser = new RpcProto.Lease(this.endPoint, credentials)
+    this.kv = new RpcProto.KV(this.endPoint, credentials)
   }
 
   lock (keyName, timeout = this.defaultTimeout) {
     return co(function * () {
+      if (!keyName || !keyName.length) throw new Error('empty keyName')
+
       const { ID } = yield this._grantLease(timeout)
-      const { key } = yield this._promisify('locker', 'lock', { name: keyName, lease: ID })
+      const { key } = yield this._promisify('locker', 'lock', {
+        name: Buffer.from(this._assembleKeyName(keyName)),
+        lease: ID
+      })
 
       return new Lock(this, key)
     }.bind(this))
+  }
+
+  isLocked (keyName) {
+    return co(function * () {
+      if (!keyName || !keyName.length) throw new Error('empty keyName')
+
+      const key = Buffer.from(this._assembleKeyName(keyName))
+
+      const { count } = yield this._promisify('kv', 'range', {
+        key,
+        range_end: this._getPrefixEndRange(key)
+      })
+
+      return Number(count) !== 0
+    }.bind(this))
+  }
+
+  _getPrefixEndRange (keyBuffer) {
+    let end = Buffer.from(keyBuffer)
+
+    for (let i = end.length - 1; i >= 0; i--) {
+      if (end[i] < 0xff) {
+        end[i] = end[i] + 1
+        end = end.slice(0, i + 1)
+        return end
+      }
+    }
+
+    throw new Error(`no prefix end: ${keyBuffer.toString()}`)
+  }
+
+  _assembleKeyName (keyName) {
+    return `${ETCD_KEY_PREFIX}${keyName}`
   }
 
   _unlock (key) {

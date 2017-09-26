@@ -45,6 +45,12 @@ const locker = new Locker({ endPoint: '127.0.0.1:2379' })
 
 Lock the resource with `keyName`, return a `Promise` which will be resolved with a `Lock` instance when the resource is available.
 
+### isLocked(keyName)
+
+- keyName `String`: The key of the resource which need to be checked.
+
+Check whether the resource with `keyName` has already been locked.
+
 ## Class Lock
 
 ### unlock()
