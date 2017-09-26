@@ -1,6 +1,6 @@
 {
   "name": "node-etcd-lock",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "https://github.com/DavidCai1993/node-etcd-lock.git",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,11 @@
     "type": "git",
     "url": "git+https://github.com/DavidCai1993/node-etcd-lock.git"
   },
+  "keywords": [
+    "lock",
+    "etcd",
+    "distributed lock"
+  ],
   "author": "DavidCai1993",
   "license": "MIT",
   "bugs": {
