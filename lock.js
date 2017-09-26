@@ -2,6 +2,7 @@
 
 class Lock {
   constructor (locker, key) {
+    if (!locker || !locker._unlock) throw new Error(`invalid locker: ${locker}`)
     if (!key) throw new Error(`empty key: ${key}`)
     this.locker = locker
     this.key = key

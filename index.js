@@ -31,8 +31,8 @@ class Locker {
       credentials = grpc.credentials.createInsecure()
     }
 
-    this.locker = new LockProto.Lock(endPoint, credentials)
-    this.leaser = new RpcProto.Lease(endPoint, credentials)
+    this.locker = new LockProto.Lock(this.endPoint, credentials)
+    this.leaser = new RpcProto.Lease(this.endPoint, credentials)
   }
 
   lock (keyName, timeout = this.defaultTimeout) {
