@@ -2,6 +2,7 @@
 const path = require('path')
 const grpc = require('grpc')
 const co = require('co')
+const Lock = require('./lock')
 
 const LOCK_PROTO_PATH = path.join(__dirname, './proto/v3lock.proto')
 const RPC_PROTO_PATH = path.join(__dirname, './proto/rpc.proto')
@@ -36,17 +37,23 @@ class Locker {
 
   lock (keyName, timeout = this.defaultTimeout) {
     return co(function * () {
-      const { ID } = yield this._promisify('leaser', 'leaseGrant', {
-        TTL: timeout / 1000
-      })
+      const { ID } = yield this._grantLease(timeout)
+      const { key } = yield this._promisify('locker', 'lock', { name: keyName, lease: ID })
 
-      const lock = yield this._promisify('locker', 'lock', {
-        name: keyName,
-        lease: ID
-      })
-
-      return lock.key
+      return new Lock(this, key)
     }.bind(this))
+  }
+
+  _unlock (key) {
+    return co(function * () {
+      yield this._promisify('locker', 'unlock', { key })
+
+      return null
+    }.bind(this))
+  }
+
+  _grantLease (timeout = this.defaultTimeout) {
+    return this._promisify('leaser', 'leaseGrant', { TTL: timeout / 1000 })
   }
 
   _promisify (stub, method, args) {
