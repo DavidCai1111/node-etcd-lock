@@ -11,7 +11,11 @@ describe('node-etcd-lock tests', function () {
 
   describe('locker', function () {
     it('use default end point', function () {
-      const { endPoint } = new Locker({})
+      const { endPoint } = new Locker({
+        rootCerts: Buffer.from(''),
+        privateKey: Buffer.from(''),
+        certChain: Buffer.from('')
+      })
 
       assert(endPoint === '127.0.0.1:2379')
     })

@@ -1,6 +1,6 @@
 {
   "name": "node-etcd-lock",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "https://github.com/DavidCai1993/node-etcd-lock.git",
   "main": "index.js",
   "scripts": {
