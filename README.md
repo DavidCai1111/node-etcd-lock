@@ -14,6 +14,7 @@ npm install node-etcd-lock
 
 ```js
 'use strict'
+const assert = require('assert')
 const Locker = require('node-etcd-lock')
 
 const locker = new Locker({ endPoint: '127.0.0.1:2379' })
@@ -25,6 +26,8 @@ const locker = new Locker({ endPoint: '127.0.0.1:2379' })
   const anotherLock = await locker.lock('resource_key', 3 * 1000)
   // Unlock the lock manually.
   await anotherLock.unlock()
+
+  assert((await locker.isLocked('resource_key')) === false)
 })(console.error)
 ```
 
