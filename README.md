@@ -22,7 +22,7 @@ const locker = new Locker({ endPoint: '127.0.0.1:2379' })
 ;(async function () {
   // Aquire a lock for a specified recource.
   const lock = await locker.lock('resource_key', 3 * 1000)
-  // This lock will be aquired after 3000 ms.
+  // This lock will be acquired after 3000 ms.
   const anotherLock = await locker.lock('resource_key', 3 * 1000)
   // Unlock the lock manually.
   await anotherLock.unlock()
@@ -38,7 +38,8 @@ const locker = new Locker({ endPoint: '127.0.0.1:2379' })
 ### new Locker({ endPoint, defaultTimeout, rootCerts, privateKey, certChain })
 
 - endPoint `String`: The end point address of etcd(v3) server, by default is `'127.0.0.1:2379'`
-- defaultTimeout `Number`: Milliseconds of lock's default timeout, by default if `5000`.
+- defaultTimeout `Number`: Milliseconds of lock's default timeout, by default is `5000`.
+- etcdKeyPrefix `String`: Prefix of the keys of locks in etcd, by default is `'__etcd_lock/'`.
 - rootCerts, privateKey, certChain `Buffer`: Options to create a GRPC SSL Credentials object, see https://grpc.io/grpc/node/src_credentials.js.html#line85.
 
 ### lock({ keyName, timeout = this.defaultTimeout })

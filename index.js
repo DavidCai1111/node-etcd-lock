@@ -9,20 +9,22 @@ const RPC_PROTO_PATH = path.join(__dirname, './proto/rpc.proto')
 const LockProto = grpc.load(LOCK_PROTO_PATH).v3lockpb
 const RpcProto = grpc.load(RPC_PROTO_PATH).etcdserverpb
 
-const ETCD_KEY_PREFIX = 'node_etcd_lock/'
+const DEFAULT_ETCD_KEY_PREFIX = '__etcd_lock/'
 
 class Locker {
   constructor (options = {
     endPoint: '127.0.0.1:2379',
     defaultTimeout: 5 * 1000,
+    etcdKeyPrefix: DEFAULT_ETCD_KEY_PREFIX,
     rootCerts: null,
     privateKey: null,
     certChain: null
   }) {
-    let { endPoint, defaultTimeout, rootCerts, privateKey, certChain } = options
+    let { endPoint, defaultTimeout, etcdKeyPrefix, rootCerts, privateKey, certChain } = options
 
     this.defaultTimeout = defaultTimeout || 5 * 1000
     this.endPoint = endPoint || '127.0.0.1:2379'
+    this.etcdKeyPrefix = etcdKeyPrefix || DEFAULT_ETCD_KEY_PREFIX
 
     let credentials
     if (rootCerts) {
@@ -82,7 +84,7 @@ class Locker {
   }
 
   _assembleKeyName (keyName) {
-    return `${ETCD_KEY_PREFIX}${keyName}`
+    return `${this.etcdKeyPrefix}${keyName}`
   }
 
   _unlock (key) {
