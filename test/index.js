@@ -8,17 +8,17 @@ const Lock = require('../lock')
 
 describe('node-etcd-lock tests', function () {
   this.timeout(1000 * 10)
-  const client = new Locker({ endPoint: '127.0.0.1:2379' })
+  const client = new Locker({ address: '127.0.0.1:2379' })
 
   describe('locker', function () {
     it('use default end point', function () {
-      const { endPoint, etcdKeyPrefix } = new Locker({
+      const { address, etcdKeyPrefix } = new Locker({
         rootCerts: Buffer.from(''),
         privateKey: Buffer.from(''),
         certChain: Buffer.from('')
       })
 
-      assert(endPoint === '127.0.0.1:2379')
+      assert(address === '127.0.0.1:2379')
       assert(etcdKeyPrefix === '__etcd_lock/')
     })
 

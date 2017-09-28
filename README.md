@@ -17,7 +17,7 @@ npm install node-etcd-lock
 const assert = require('assert')
 const Locker = require('node-etcd-lock')
 
-const locker = new Locker({ endPoint: '127.0.0.1:2379' })
+const locker = new Locker({ address: '127.0.0.1:2379' })
 
 ;(async function () {
   // Acquire a lock for a specified recource.
@@ -35,9 +35,9 @@ const locker = new Locker({ endPoint: '127.0.0.1:2379' })
 
 ## Class Locker
 
-### new Locker({ endPoint, defaultTimeout, rootCerts, privateKey, certChain })
+### new Locker({ address, defaultTimeout, rootCerts, privateKey, certChain })
 
-- endPoint `String`: The end point address of etcd(v3) server, by default is `'127.0.0.1:2379'`
+- address `String`: The address of etcd(v3) server, by default is `'127.0.0.1:2379'`
 - defaultTimeout `Number`: Milliseconds of lock's default timeout, by default is `5000`.
 - etcdKeyPrefix `String`: Prefix of the keys of locks in etcd, by default is `'__etcd_lock/'`.
 - rootCerts, privateKey, certChain `Buffer`: Options to create a GRPC SSL Credentials object, see https://grpc.io/grpc/node/src_credentials.js.html#line85.

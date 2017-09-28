@@ -13,17 +13,17 @@ const DEFAULT_ETCD_KEY_PREFIX = '__etcd_lock/'
 
 class Locker {
   constructor (options = {
-    endPoint: '127.0.0.1:2379',
+    address: '127.0.0.1:2379',
     defaultTimeout: 5 * 1000,
     etcdKeyPrefix: DEFAULT_ETCD_KEY_PREFIX,
     rootCerts: null,
     privateKey: null,
     certChain: null
   }) {
-    let { endPoint, defaultTimeout, etcdKeyPrefix, rootCerts, privateKey, certChain } = options
+    let { address, defaultTimeout, etcdKeyPrefix, rootCerts, privateKey, certChain } = options
 
     this.defaultTimeout = defaultTimeout || 5 * 1000
-    this.endPoint = endPoint || '127.0.0.1:2379'
+    this.address = address || '127.0.0.1:2379'
     this.etcdKeyPrefix = etcdKeyPrefix || DEFAULT_ETCD_KEY_PREFIX
 
     let credentials
@@ -35,9 +35,9 @@ class Locker {
       credentials = grpc.credentials.createInsecure()
     }
 
-    this.locker = new LockProto.Lock(this.endPoint, credentials)
-    this.leaser = new RpcProto.Lease(this.endPoint, credentials)
-    this.kv = new RpcProto.KV(this.endPoint, credentials)
+    this.locker = new LockProto.Lock(this.address, credentials)
+    this.leaser = new RpcProto.Lease(this.address, credentials)
+    this.kv = new RpcProto.KV(this.address, credentials)
   }
 
   lock (keyName, timeout = this.defaultTimeout) {
