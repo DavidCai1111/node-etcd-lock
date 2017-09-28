@@ -62,7 +62,8 @@ class Locker {
 
       const { count } = yield this._promisify('kv', 'range', {
         key,
-        range_end: this._getPrefixEndRange(key)
+        range_end: this._getPrefixEndRange(key),
+        count_only: true
       })
 
       return Number(count) !== 0
