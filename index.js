@@ -54,7 +54,7 @@ class Locker {
             lease: (yield this._grantLease(timeout)).ID
           })
 
-          return new Lock(this, key, keyName)
+          return new Lock(this, key)
         } catch (error) {
           // Retry when the etcd server is too busy to handle transactions.
           if (count <= 3 && error.message && error.message.includes('too many requests')) {
@@ -95,7 +95,8 @@ class Locker {
       }
     }
 
-    throw new Error(`no prefix end: ${keyBuffer.toString()}`)
+    // Buffer <00>
+    return Buffer.alloc(1)
   }
 
   _assembleKeyName (keyName) {
