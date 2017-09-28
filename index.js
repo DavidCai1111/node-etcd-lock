@@ -2,6 +2,7 @@
 const path = require('path')
 const grpc = require('grpc')
 const co = require('co')
+const delay = require('delay')
 const Lock = require('./lock')
 
 const LOCK_PROTO_PATH = path.join(__dirname, './proto/v3lock.proto')
@@ -44,13 +45,26 @@ class Locker {
     return co(function * () {
       if (!keyName || !keyName.length) throw new Error('empty keyName')
 
-      const { ID } = yield this._grantLease(timeout)
-      const { key } = yield this._promisify('locker', 'lock', {
-        name: Buffer.from(this._assembleKeyName(keyName)),
-        lease: ID
-      })
+      let count = 0
+      while (true) {
+        count++
+        try {
+          const { key } = yield this._promisify('locker', 'lock', {
+            name: Buffer.from(this._assembleKeyName(keyName)),
+            lease: (yield this._grantLease(timeout)).ID
+          })
 
-      return new Lock(this, key)
+          return new Lock(this, key, keyName)
+        } catch (error) {
+          // Retry when the etcd server is too busy to handle transactions.
+          if (count <= 3 && error.message && error.message.includes('too many requests')) {
+            yield delay(count * 500)
+            continue
+          }
+
+          throw error
+        }
+      }
     }.bind(this))
   }
 
