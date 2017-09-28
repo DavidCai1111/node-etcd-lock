@@ -20,7 +20,7 @@ const Locker = require('node-etcd-lock')
 const locker = new Locker({ endPoint: '127.0.0.1:2379' })
 
 ;(async function () {
-  // Aquire a lock for a specified recource.
+  // Acquire a lock for a specified recource.
   const lock = await locker.lock('resource_key', 3 * 1000)
   // This lock will be acquired after 3000 ms.
   const anotherLock = await locker.lock('resource_key', 3 * 1000)
