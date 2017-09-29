@@ -104,6 +104,14 @@ describe('node-etcd-lock tests', function () {
       isLocked = yield client.isLocked('node_lock_test_7')
       assert(isLocked === true)
     })
+
+    it('check empty key is locked', function * () {
+      try {
+        yield client.isLocked('')
+      } catch (error) {
+        assert(error.message, 'empty keyName')
+      }
+    })
   })
 
   describe('lock', function () {

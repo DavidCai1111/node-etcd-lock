@@ -41,13 +41,12 @@ class Locker {
     this.kv = new RpcProto.KV(this.address, credentials)
   }
 
-  lock (keyName, timeout = this.defaultTimeout) {
+  lock (keyName, timeout = this.defaultTimeout, retry = 3) {
     return co(function * () {
       if (!keyName || !keyName.length) throw new Error('empty keyName')
 
       let count = 0
-      while (true) {
-        count++
+      while (++count) {
         try {
           const { key } = yield this._promisify('locker', 'lock', {
             name: Buffer.from(this._assembleKeyName(keyName)),
@@ -57,7 +56,7 @@ class Locker {
           return new Lock(this, key)
         } catch (error) {
           // Retry when the etcd server is too busy to handle transactions.
-          if (count <= 3 && error.message && error.message.includes('too many requests')) {
+          if (count <= retry && error.message && error.message.includes('too many requests')) {
             yield delay(count * 500)
             continue
           }

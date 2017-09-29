@@ -1,6 +1,6 @@
 {
   "name": "node-etcd-lock",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Distributed locks powered by etcd v3 for Node.js",
   "main": "index.js",
   "scripts": {
