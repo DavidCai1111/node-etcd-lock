@@ -33,7 +33,10 @@ describe('node-etcd-lock tests', function () {
         yield client.lock('')
       } catch (error) {
         assert(error.message, 'empty keyName')
+        return
       }
+
+      throw new Error('not throw')
     })
 
     it('lock with a fresh key name', function * () {
