@@ -96,7 +96,7 @@ describe('node-etcd-lock tests', function () {
       isLocked = yield client.isLocked('node_lock_test_6')
       assert(isLocked === true)
 
-      isLocked = yield client.isLocked('node_lock_test_6')
+      isLocked = yield client.isLocked('node_lock_test_7')
       assert(isLocked === true)
 
       yield delay(3500)
